@@ -1,6 +1,6 @@
 import csv
 import xlsxwriter
-from os import listdir
+from os import listdir, mkdir
 from os.path import splitext
 
 class csv2xlsx:
@@ -15,8 +15,7 @@ class csv2xlsx:
             return input_col
 
     def create_xlsx(self):
-        output_path = './output/'
-        workbook = xlsxwriter.Workbook(output_path + self.filename + '.xlsx')
+        workbook = xlsxwriter.Workbook('./output/' + self.filename + '.xlsx')
         worksheet = workbook.add_worksheet()
 
         with open(self.input_path, encoding='shift-jis') as csvfile:
@@ -33,18 +32,17 @@ class csv2xlsx:
 
             workbook.close()
 
+
 if __name__ == '__main__':
     try:
-        doc_path = './doc'
-        filelist = listdir(doc_path)
-        for file in filelist:
+        if 'output' not in listdir('./'):
+            mkdir('./output/')
+        input_path = './doc/'
+        for file in listdir(input_path):
             filename, extension = splitext(file)
-            filepath = doc_path + '/' + file
+            filepath = input_path + file
             if extension == '.csv':
                 f = csv2xlsx(filepath, filename)
                 f.create_xlsx()
-
-    except FileNotFoundError:
-        filelist = listdir('./')
-        print(filelist)
-        print("There is no doc directory under your root")
+    except:
+        print("Unexpected error is occurred")
